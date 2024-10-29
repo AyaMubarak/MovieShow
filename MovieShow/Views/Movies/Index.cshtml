@@ -1,0 +1,128 @@
+﻿@model IEnumerable<MovieShow.Models.Movie>
+
+<div class="section">
+    <div class="container">
+        <!-- Section Header -->
+        <div class="section-header text-center mb-5">
+            <h2 class="display-4 text-light">Latest Movies</h2>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="d-flex justify-content-between mb-4">
+            <!-- Search Input -->
+            <input type="text" id="movieSearch" class="form-control" placeholder="Search movies..." style="max-width: 300px; border-radius: 25px;">
+
+            <!-- Genre Dropdown -->
+            <select id="genreFilter" class="form-select" style="max-width: 200px; border-radius: 25px;">
+                <option value="">All Genres</option>
+                @foreach (var genre in Model.Select(m => m.Genre).Distinct())
+                {
+                    <option value="@genre">@genre</option>
+                }
+            </select>
+        </div>
+
+        <!-- Movies Grid -->
+        <div class="row" id="moviesGrid">
+            @foreach (var movie in Model)
+            {
+                <!-- Movie Card -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4 movie-card" data-title="@movie.Title.ToLower()" data-genre="@movie.Genre">
+                    <a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.MovieId" class="movie-item text-decoration-none">
+                        <div class="card border-0 shadow-sm h-100 bg-dark text-light">
+                            <img src="@movie.Img" alt="@movie.Title" class="card-img-top img-fluid" />
+                            <div class="card-body">
+                                <h5 class="card-title">@movie.Title</h5>
+                                <p class="card-text text-secondary">@movie.Genre</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-warning text-dark"><i class="bx bx-star"></i> @movie.Rating</span>
+                                    <span class="badge bg-info">HD</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript for search and genre filter
+    document.addEventListener("DOMContentLoaded", function () {
+        const movieSearch = document.getElementById('movieSearch');
+        const genreFilter = document.getElementById('genreFilter');
+        const movieCards = document.querySelectorAll('.movie-card');
+
+        function filterMovies() {
+            const searchText = movieSearch.value.toLowerCase();
+            const selectedGenre = genreFilter.value;
+
+            movieCards.forEach(card => {
+                const title = card.getAttribute('data-title');
+                const genre = card.getAttribute('data-genre');
+
+                // Show or hide card based on search text and genre filter
+                if ((title.includes(searchText) || searchText === "") &&
+                    (genre === selectedGenre || selectedGenre === "")) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+        // Event listeners for search and filter
+        movieSearch.addEventListener('input', filterMovies);
+        genreFilter.addEventListener('change', filterMovies);
+    });
+</script>
+
+<style>
+    /* Section styling */
+    .section {
+        padding: 50px 0;
+        background-color: #121212; /* Dark background for contrast */
+    }
+
+    /* Movie card styling */
+    .movie-item .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 10px;
+    }
+
+
+
+    .movie-item img {
+        object-fit: cover;
+        height: 300px; /* Increased height for larger images */
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .section-header {
+        margin-bottom: 40px;
+    }
+
+        .section-header h2 {
+            font-weight: bold;
+           
+        }
+
+    /* Input and select styling */
+    .form-control, .form-select {
+        border-radius: 25px;
+        border: 1px solid green;
+        background-color: #212529; /* Dark background for inputs */
+        color: white;
+    }
+
+        .form-control::placeholder, .form-select option {
+            color: #cccccc; /* Light text for placeholder and dropdown */
+        }
+
+    /* Badge styling */
+    .badge {
+        font-size: 0.9rem;
+    }
+</style>

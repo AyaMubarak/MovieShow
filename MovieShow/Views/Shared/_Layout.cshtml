@@ -1,0 +1,108 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<IdentityUser> _signInManager;
+@inject UserManager<IdentityUser> _userManager;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> @ViewData["Title"] - MovieShow</title>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="~/css/normalize.css">
+    <link rel="stylesheet" href="~/css/fonts.css">
+    <link rel="stylesheet" href="~/css/bootstrap-grid.min.css">
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"
+          integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g=="
+          crossorigin="anonymous" />
+    <link rel="stylesheet" href="~/css/main.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="nav-wrapper">
+        <div class="container">
+            <div class="nav">
+                <!-- Logo -->
+                <a href="~/Home/Index" class="logo">
+                    <i class='bx bx-movie-play flip-rtl bx-tada main-color'></i>
+                    <span>Movie</span><span class="main-color">Show</span>
+                </a>
+                <!-- End Logo -->
+                <!-- Menu -->
+                <ul class="nav-menu" id="nav-menu">
+                    <li><a asp-action="Index" asp-controller="Movies" >Movies</a></li>
+                    <li><a asp-action="Index" asp-controller="Series">Series</a></li>
+                    @if (!_signInManager.IsSignedIn(User))
+                    {
+                        <li><a asp-action="Login" asp-controller="Account">Login</a></li>
+                    }
+                    else
+                    {
+                        var user = await _userManager.GetUserAsync(User);
+                        var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+
+                        if (isAdmin)
+                        {
+                            <li><a asp-action="Index" asp-controller="Dashboard" asp-area="Dashboard">Dashboard</a></li>
+                        }
+                        else
+                        {
+                            <li><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        }
+
+                        <li>
+                            <form asp-action="Logout" asp-controller="Account" method="post" style="display:inline; padding:12px;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="aa-register">Logout @User.Identity.Name</button>
+                            </form>
+                        </li>
+                    }
+                </ul>
+
+
+
+                <!-- Mobile Menu Toggle -->
+                <div class="hamburger-menu" id="hamburger-menu" aria-label="Toggle Navigation" aria-expanded="false">
+                    <div class="hamburger"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Navigation -->
+    <!-- Main Content Render -->
+    @RenderBody()
+
+    <!-- FOOTER SECTION -->
+    <footer class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-4 col-md-6 col-sm-12">
+                    <div class="content">
+                        <a href="#" class="logo">
+                            <i class='bx bx-movie-play bx-tada main-color'></i>Movie<span class="main-color">Show</span>x
+                        </a>
+                        <div class="social-list">
+                            <a href="#" class="social-item"><i class="bx bxl-facebook"></i></a>
+                            <a href="#" class="social-item"><i class="bx bxl-twitter"></i></a>
+                            <a href="#" class="social-item"><i class="bx bxl-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+              
+                        </div>
+        </div>
+    </footer>
+    <!-- END FOOTER SECTION -->
+    <!-- Copyright Section -->
+    <div class="copyright">
+        copyright 2024 <a href="" target="_blank">Aya</a>
+    </div>
+    <!-- End Copyright Section -->
+    <!-- JS Files -->
+    <script src="~/js/jQuery/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous"></script>
+    <script src="~/js/main.js"></script>
+</body>
+</html>

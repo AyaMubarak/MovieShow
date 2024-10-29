@@ -1,0 +1,132 @@
+﻿@model MovieShow.Models.Movie
+
+@section Header {
+    Create
+}
+
+<div class="col-md-12">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Create Movie</h3>
+        </div>
+        <form asp-action="Create" enctype="multipart/form-data" method="post" asp-controller="Movies" id="MovieForm">
+            <div class="card-body">
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description">Enter Movie Description</label>
+                    <textarea name="Description" id="editor" hidden></textarea>
+                    <div id="ck-editor" style="height: 200px;"></div>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Director" class="control-label"></label>
+                    <input asp-for="Director" class="form-control" />
+                    <span asp-validation-for="Director" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ReleaseDate" class="control-label"></label>
+                    <input asp-for="ReleaseDate" class="form-control" type="date" />
+                    <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Cast" class="control-label"></label>
+                    <input asp-for="Cast" class="form-control" />
+                    <span asp-validation-for="Cast" class="text-danger"></span>
+                </div>
+               
+                <div class="form-group">
+                    <label asp-for="TrailerUrl" class="control-label"></label>
+                    <input asp-for="TrailerUrl" class="form-control" />
+                    <span asp-validation-for="TrailerUrl" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="VideoUrl" class="control-label"></label>
+                    <input asp-for="VideoUrl" class="form-control" />
+                    <span asp-validation-for="VideoUrl" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Rating" class="control-label"></label>
+                    <input asp-for="Rating" class="form-control" type="number" step="0.1" min="0" max="10" />
+                    <span asp-validation-for="Rating" class="text-danger"></span>
+                </div>
+              <div class="form-group">
+                    <label asp-for="Seasons" class="control-label"></label>
+                    <textarea asp-for="Seasons" class="form-control"></textarea>
+                    <span asp-validation-for="Seasons" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Genre" class="control-label"></label>
+                    <select asp-for="Genre" class="form-control" asp-items="Html.GetEnumSelectList<MovieShow.Models.Movie.Genres>()"></select>
+                    <span asp-validation-for="Genre" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Img" class="control-label"></label>
+                    <input type="file" asp-for="Img" class="form-control imageInput" />
+                    <span asp-validation-for="Img" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <img src="#" alt="Image Preview" style="display: none; width: 100px;" id="imagePreview" />
+                </div>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
+                    </label>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Script {
+    <!-- Include CKEditor -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize CKEditor
+            ClassicEditor
+                .create(document.querySelector('#ck-editor'))
+                .then(editor => {
+                    // Handle form submission
+                    document.getElementById('MovieForm').addEventListener('submit', function (event) {
+                        const descriptionContent = editor.getData(); // Get content from CKEditor
+                        document.querySelector("#editor").value = descriptionContent; // Update hidden input
+
+                        if (!descriptionContent.trim()) {
+                            alert('Description cannot be empty. Please enter a description.');
+                            event.preventDefault();
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+            // Image preview functionality
+            document.querySelector(".imageInput").addEventListener("change", (event) => {
+                const file = event.target.files[0];
+                const imagePreview = document.querySelector("#imagePreview");
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = "block";
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    imagePreview.style.display = "none";
+                }
+            });
+        });
+    </script>
+}
+
+
+

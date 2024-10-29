@@ -1,0 +1,45 @@
+﻿@model Movie
+
+<!-- movie-slide -->
+<div class="movie-slide">
+    <!-- slide item -->
+    <div class="slide-item ">
+        <img src="@Model.Img" alt="">
+        <div class="overlay"></div>
+        <div class="slide-item-content">
+            <div class="item-content-wrapper">
+                <div class="item-content item-content-title">@Model.Title</div>
+                <div class="item-content-infos">
+                    <div class="item-content-info rating">
+                        <i class="bx bx-star flip-rtl"></i>
+                        <span>@Model.Rating</span>
+                    </div>
+                    <div class="item-content-info time">
+                        <i class="bx bx-time flip-rtl"></i>
+                        <!-- Displaying ReleaseDate as "Month day, Year" (e.g., Jan 1, 2022) -->
+                        <span>@Model.ReleaseDate.ToString("MMM d, yyyy")</span>
+                    </div>
+                </div>
+                <div class="item-content-description">
+                    @Html.Raw(@Model.Description)
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end slide item -->
+</div>
+<!-- end movie-slide -->
+<!-- seasons slid -->
+<div class="section">
+    <div class="container">
+        <div class="section-header">
+            seasons
+        </div>
+        <div id="seasons-slid" class="owl-carousel ">
+            <a href="@Model.VideoUrl" class="season-item btn btn-hover active">
+                <i class="bx bx-play-circle flip-rtl"></i>
+                <span>Watch now</span>
+            </a>
+        </div>
+    </div>
+</div>

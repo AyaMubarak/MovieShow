@@ -1,0 +1,49 @@
+﻿@model MovieShow.Models.Combine
+
+<div class="movie-slide">
+    @foreach (var serie in Model.Serie)
+    {
+        <div class="slide-item">
+            <img src="@serie.Img" alt="">
+            <div class="overlay"></div>
+            <div class="slide-item-content">
+                <div class="item-content-wrapper">
+                    <div class="item-content item-content-title">@serie.Title</div>
+                    <div class="item-content-infos">
+                        <div class="item-content-info rating">
+                            <i class="bx bx-star flip-rtl"></i>
+                            <span>@serie.Rating</span>
+                        </div>
+                    </div>
+                    <div class="item-content-description">
+                        @Html.Raw(@serie.Description)
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="section">
+    <div class="container">
+        <div class="section-header">Seasons</div>
+        <div id="seasons-list">
+            @foreach (var season in Model.Season)
+            {
+                <div class="season-item">
+                    <h2>Season @season.SeasonNumber</h2>
+                    <div class="episodes-list">
+                        @foreach (var episode in Model.Episode.Where(e => e.SeasonId == season.SeasonId))
+                        {
+                            <a href="@episode.VideoUrl" class=" btn btn-hover ">
+                                <i class="bx bx-play-circle flip-rtl"></i>
+                                <span class="num">Episode @episode.EpisodeNumber</span>
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+

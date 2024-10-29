@@ -1,0 +1,33 @@
+﻿@model IEnumerable<MovieShow.Models.Serie>
+<div class="section">
+    <div class="container">
+        <div class="section-header">
+            Latest Series
+        </div>
+        <div class="movies-slid carousel-nav-center owl-carousel">
+            @foreach (var serie in Model)
+            {
+                <!-- movie item  -->
+                <a asp-controller="Series" asp-action="Details" asp-route-id="@serie.SerieId" class="movie-item">
+                    <img src="@serie.Img" alt="">
+                    <div class="movie-item-content">
+                        <div class="movie-item-title">
+                            @serie.Title
+                        </div>
+                        <div class="item-content-infos">
+                            <div class="item-content-info rating">
+                                <i class="bx bx-star flip-rtl"></i>
+                                <span>@serie.Rating</span>
+                            </div>
+                            <div class="item-content-info resolution">
+                                <i class='bx bx-tv flip-rtl'></i>
+                                <span>Hd</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <!-- end movie item  -->
+            }
+        </div>
+    </div>
+</div>

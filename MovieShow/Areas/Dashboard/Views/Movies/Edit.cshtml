@@ -1,0 +1,134 @@
+﻿@model Movie
+
+@section Header {
+    Movies Edit
+}
+
+<div class="col-md-12">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Edit Movies</h3>
+        </div>
+        <form asp-action="Edit" asp-controller="Movies" enctype="multipart/form-data">
+            <div class="card-body">
+                <div class="form-group">
+                    <input type="hidden" asp-for="MovieId" />
+                    <label asp-for="Title">Enter Movie Name</label>
+                    <input asp-for="Title" class="form-control" placeholder="Enter Movie Title" required />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description">Enter Movie Description</label>
+                    <textarea name="Description" id="editor" hidden>@Html.Raw(Model.Description)</textarea> <!-- Populate with existing description -->
+                    <div id="ck-editor" style="height: 200px;"></div>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="Director">Enter Movie Director</label>
+                    <input asp-for="Director" class="form-control" placeholder="Enter Movie Director" required />
+                </div>
+                <div class="form-group">
+                    <label asp-for="ReleaseDate">Enter Movie  ReleaseDate</label>
+                    <input asp-for="ReleaseDate" class="form-control" placeholder="Enter Movie ReleaseDate" required />
+                </div> 
+                <div class="form-group">
+                    <label asp-for="Cast">Enter Movie Cast </label>
+                    <input asp-for="Cast" class="form-control" placeholder="Enter Movie Cast" required />
+                </div> 
+               
+                <div class="form-group">
+                    <label asp-for="TrailerUrl">Enter Movie  TrailerUrl</label>
+                    <input asp-for="TrailerUrl" class="form-control" placeholder="Enter Movie TrailerUrl" required />
+                </div>
+                <div class="form-group">
+                    <label asp-for="VideoUrl">Enter Movie  VideoUrl</label>
+                    <input asp-for="VideoUrl" class="form-control" placeholder="Enter Movie VideoUrl" required />
+                </div><div class="form-group">
+                    <label asp-for="Rating">Enter Movie  Rating</label>
+                    <input asp-for="Rating" class="form-control" placeholder="Enter Movie Rating" required />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Seasons">Enter Movie  Seasons</label>
+                    <input asp-for="Seasons" class="form-control" placeholder="Enter Movie Seasons" required />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Genre" class="control-label"></label>
+                    <select asp-for="Genre" class="form-control" asp-items="Html.GetEnumSelectList<MovieShow.Models.Movie.Genres>()"></select>
+                    <span asp-validation-for="Genre" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="IsDeleted"></label>
+                    <input asp-for="IsDeleted" type="checkbox" />
+                    <span>@(Model.IsDeleted ? "Deleted" : "Active")</span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Img">Enter Movie Image</label>
+                    <input asp-for="Img" type="file" class="form-control-file imageInput" accept="image/*" required />
+                </div>
+
+                <div class="form-group">
+                    <img src="#" alt="Image Preview" style="display: none; width: 100px;" id="imagePreview" />
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Edit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Script {
+    <!-- Include CKEditor -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize CKEditor
+            ClassicEditor
+                .create(document.querySelector('#ck-editor'))
+                .then(editor => {
+                    // Set existing description if editing
+                    const existingDescription = document.querySelector("#editor").value;
+                    if (existingDescription) {
+                        editor.setData(existingDescription); // Set the existing content in the editor
+                    } else {
+                        // Optional: Set a placeholder if no description exists
+                        editor.setData('<p>Enter Movie Description</p>'); // Change this as needed
+                    }
+
+                    // Update hidden input on form submit
+                    document.querySelector("form").addEventListener("submit", function (event) {
+                        editor.save().then(data => {
+                            document.querySelector("#editor").value = data; // Update hidden input
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+            // Image preview functionality
+            document.querySelector(".imageInput").addEventListener("change", (event) => {
+                const file = event.target.files[0];
+                const imagePreview = document.querySelector("#imagePreview");
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = "block";
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    imagePreview.style.display = "none";
+                }
+            });
+        });
+    </script>
+}
+
+
+

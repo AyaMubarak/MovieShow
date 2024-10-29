@@ -1,0 +1,42 @@
+﻿@model MovieShow.Models.Serie
+@{
+    Layout = null; // Adjust if using a specific layout
+}
+
+<!-- Serie Details Section -->
+@section Header {
+    details
+}
+<h2>@Model.Title</h2>
+<p>@Html.Raw(@Model.Description)</p>
+<p>Genre: @Model.Genre</p>
+<p>Director: @Model.Director</p>
+<p>Rating: @Model.Rating</p>
+<img src="@Model.Img" alt="Alternate Text" />
+
+<h3>Seasons</h3>
+@if (Model.Season != null && Model.Season.Any())
+{
+    foreach (var season in Model.Season)
+    {
+        <h4>Season @season.SeasonNumber</h4>
+        <ul>
+            @if (season.Episode != null && season.Episode.Any())
+            {
+                foreach (var episode in season.Episode)
+                {
+                    <li>Episode Number: @episode.EpisodeNumber</li>
+                    <li>Video URL: <a href="@episode.VideoUrl" target="_blank">@episode.VideoUrl</a></li>
+                }
+            }
+            else
+            {
+                <li>No episodes available.</li>
+            }
+        </ul>
+    }
+}
+else
+{
+    <p>No seasons available.</p>
+}

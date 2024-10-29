@@ -1,0 +1,100 @@
+html {
+    direction: rtl;
+}
+
+ul {
+    list-style-type: none; /* Removes bullets */
+    padding: 0; /* Removes default padding */
+    margin: 0; /* Removes default margin */
+}
+
+.nav-menu li ~ li {
+    margin-right: 30px;
+    margin-left: 0px;
+}
+
+.c-n-i-dropDown::before {
+    left: unset;
+    right: 10%;
+}
+
+.btn-hover::before {
+    left: unset;
+    right: 0;
+}
+
+.hamburger-menu.active .hamburger::before {
+    transform-origin: top right;
+    transform: rotate(-45deg);
+    right: 6px;
+}
+
+.hamburger-menu.active .hamburger::after {
+    transform-origin: bottom right;
+    transform: rotate(45deg);
+    right: 6px;
+}
+
+.item-content-wrapper {
+    padding-right: 5rem;
+    padding-left: unset;
+}
+
+    .item-content-wrapper::before {
+        right: 100%;
+        background: linear-gradient(to left, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+    }
+
+.flip-rtl {
+    transform: scaleX(-1) !important;
+}
+
+.section-header a {
+    margin-right: auto;
+    margin-left: unset;
+}
+
+.social-item ~ .social-item {
+    margin-left: unset;
+    margin-right: 20px;
+}
+
+.wedget-menu a:hover {
+    transform: translateX(-5px);
+}
+
+.episode-name {
+    padding-right: 100px;
+    padding-left: unset;
+}
+
+.episodes-list .episode-number {
+    left: unset;
+    right: 40px;
+}
+
+.episodes-navigation a:last-child {
+    margin-left: unset;
+    margin-right: auto;
+}
+
+.search-bar .search-field i {
+    left: unset;
+    right: 20px;
+    margin: auto 5px;
+    transform: translate(50%, -50%) scaleX(-1);
+}
+
+@media screen and (max-width: 850px) {
+    .nav-menu {
+        right: -120%;
+    }
+
+        .nav-menu li {
+            margin: 10px 30px !important;
+        }
+
+        .nav-menu.active {
+            right: 0;
+        }
+}

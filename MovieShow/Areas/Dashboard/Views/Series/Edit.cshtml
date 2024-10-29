@@ -1,0 +1,172 @@
+﻿@model MovieShow.Models.Serie
+
+@section Header {
+    Edit Serie
+}
+
+<div class="col-md-12">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Edit Serie</h3>
+        </div>
+        <form asp-action="Edit" enctype="multipart/form-data" method="post" asp-controller="Series" id="SerieForm">
+            <div class="card-body">
+                <!-- Hidden input to hold the Series ID -->
+                <input type="hidden" asp-for="SerieId" />
+
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label">Enter Serie Description</label>
+                    <textarea asp-for="Description" id="editor" hidden></textarea>
+                    <div id="ck-editor" style="height: 200px;"></div>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Director" class="control-label"></label>
+                    <input asp-for="Director" class="form-control" />
+                    <span asp-validation-for="Director" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Rating" class="control-label"></label>
+                    <input asp-for="Rating" class="form-control" type="number" step="0.1" min="0" max="10" />
+                    <span asp-validation-for="Rating" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Genre" class="control-label"></label>
+                    <select asp-for="Genre" class="form-control" asp-items="Html.GetEnumSelectList<MovieShow.Models.Serie.Genres>()"></select>
+                    <span asp-validation-for="Genre" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Img" class="control-label"></label>
+                    <input type="file" asp-for="Img" class="form-control imageInput" />
+                    <span asp-validation-for="Img" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <img src="#" alt="Image Preview" style="display: none; width: 100px;" id="imagePreview" />
+                </div>
+
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
+                    </label>
+                </div>
+
+                <!-- Dynamic Section for Adding Seasons and Episodes -->
+                <div class="form-group">
+                    <h4>Seasons</h4>
+                    <div id="seasonsContainer">
+                        <!-- Each Season will be added here dynamically -->
+                    </div>
+                    <button type="button" id="addSeasonButton" class="btn btn-success">Add Season</button>
+                </div>
+
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Script {
+    <!-- Include CKEditor -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize CKEditor
+            ClassicEditor
+                .create(document.querySelector('#ck-editor'))
+                .then(editor => {
+                    // Set the initial value for the CKEditor from the hidden textarea
+                    editor.setData(document.querySelector('#editor').value);
+
+                    document.getElementById('SerieForm').addEventListener('submit', function (event) {
+                        const descriptionContent = editor.getData();
+                        document.querySelector("#editor").value = descriptionContent;
+
+                        if (!descriptionContent.trim()) {
+                            alert('Description cannot be empty. Please enter a description.');
+                            event.preventDefault();
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+            // Image preview functionality
+            document.querySelector(".imageInput").addEventListener("change", (event) => {
+                const file = event.target.files[0];
+                const imagePreview = document.querySelector("#imagePreview");
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = "block";
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    imagePreview.style.display = "none";
+                }
+            });
+
+            // Add Season functionality
+            const seasonsContainer = document.getElementById('seasonsContainer');
+            const addSeasonButton = document.getElementById('addSeasonButton');
+            let seasonCount = 0;
+
+            addSeasonButton.addEventListener('click', function () {
+                seasonCount++;
+
+                // Create a new div for the season
+                const seasonDiv = document.createElement('div');
+                seasonDiv.classList.add('season-group', 'mb-3');
+                seasonDiv.innerHTML = `
+                            <h5>Season ${seasonCount}</h5>
+                            <div class="form-group">
+                                <label for="Seasons_${seasonCount}_Episodes">Episodes</label>
+                                <div id="episodesContainer_${seasonCount}"></div>
+                                <button type="button" class="btn btn-secondary addEpisodeButton" data-season="${seasonCount}">Add Episode</button>
+                            </div>
+                            <hr />
+                        `;
+                seasonsContainer.appendChild(seasonDiv);
+
+                // Add functionality to add episodes to the newly created season
+                seasonDiv.querySelector('.addEpisodeButton').addEventListener('click', function () {
+                    const seasonIndex = this.getAttribute('data-season');
+                    const episodesContainer = document.getElementById(`episodesContainer_${seasonIndex}`);
+                    const episodeCount = episodesContainer.children.length;
+
+                    const episodeDiv = document.createElement('div');
+                    episodeDiv.classList.add('episode-group', 'mb-2');
+                    episodeDiv.innerHTML = `
+                                <div class="form-group">
+                                    <label for="Seasons_${seasonIndex}_Episodes_${episodeCount}_Number">Episode Number</label>
+                                    <input type="number" name="Seasons[${seasonIndex}].Episodes[${episodeCount}].Number" class="form-control" min="1" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="Seasons_${seasonIndex}_Episodes_${episodeCount}_VideoUrl">Video URL</label>
+                                    <input type="url" name="Seasons[${seasonIndex}].Episodes[${episodeCount}].VideoUrl" class="form-control" />
+                                </div>
+                            `;
+                    episodesContainer.appendChild(episodeDiv);
+                });
+            });
+
+            // Optionally: Pre-fill existing data for seasons and episodes if editing
+            // (You would typically loop through the existing series seasons and episodes to populate this.)
+        });
+    </script>
+}
